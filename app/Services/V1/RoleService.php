@@ -9,7 +9,7 @@ class RoleService
 {
     public function getAllRoles()
     {
-        return Role::with('permissions')->get();
+        return Role::with('permissions:id,name')->get()->makeHidden(['guard_name', 'created_at', 'updated_at', 'pivot']);
     }
 
     public function createRole(array $data)
@@ -20,12 +20,12 @@ class RoleService
             $role->syncPermissions($data['permissions']);
         }
 
-        return $role->load('permissions');
+        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
     }
 
     public function getRole(Role $role)
     {
-        return $role->load('permissions');
+        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
     }
 
     public function updateRole(Role $role, array $data)
@@ -36,7 +36,7 @@ class RoleService
             $role->syncPermissions($data['permissions']);
         }
 
-        return $role->load('permissions');
+        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
     }
 
     public function deleteRole(Role $role)
@@ -46,6 +46,6 @@ class RoleService
 
     public function getAllPermissions()
     {
-        return Permission::all();
+        return Permission::select('id', 'name')->get()->makeHidden(['guard_name', 'created_at', 'updated_at']);
     }
 }
