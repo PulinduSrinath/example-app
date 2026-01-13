@@ -9,7 +9,8 @@ class RoleService
 {
     public function getAllRoles()
     {
-        return Role::with('permissions:id,name')->get()->makeHidden(['guard_name', 'created_at', 'updated_at', 'pivot']);
+        $roles = Role::with('permissions')->get();
+        return \App\Http\Resources\V1\RoleResource::collection($roles);
     }
 
     public function createRole(array $data)
@@ -20,12 +21,12 @@ class RoleService
             $role->syncPermissions($data['permissions']);
         }
 
-        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
+        return new \App\Http\Resources\V1\RoleResource($role->load('permissions'));
     }
 
     public function getRole(Role $role)
     {
-        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
+        return new \App\Http\Resources\V1\RoleResource($role->load('permissions'));
     }
 
     public function updateRole(Role $role, array $data)
@@ -36,7 +37,7 @@ class RoleService
             $role->syncPermissions($data['permissions']);
         }
 
-        return $role->load('permissions:id,name')->makeHidden(['guard_name', 'created_at', 'updated_at']);
+        return new \App\Http\Resources\V1\RoleResource($role->load('permissions'));
     }
 
     public function deleteRole(Role $role)
@@ -46,6 +47,7 @@ class RoleService
 
     public function getAllPermissions()
     {
-        return Permission::select('id', 'name')->get()->makeHidden(['guard_name', 'created_at', 'updated_at']);
+        $permissions = Permission::all();
+        return \App\Http\Resources\V1\PermissionResource::collection($permissions);
     }
 }

@@ -9,7 +9,8 @@ class UserService
 {
     public function getAllUsers()
     {
-        return User::with('roles')->get();
+        $users = User::with('roles')->get();
+        return \App\Http\Resources\V1\UserResource::collection($users);
     }
 
     public function createUser(array $data)
@@ -24,12 +25,12 @@ class UserService
             $user->syncRoles($data['roles']);
         }
 
-        return $user->load('roles');
+        return new \App\Http\Resources\V1\UserResource($user->load('roles'));
     }
 
     public function getUser(User $user)
     {
-        return $user->load('roles', 'permissions');
+        return new \App\Http\Resources\V1\UserResource($user->load('roles', 'permissions'));
     }
 
     public function updateUser(User $user, array $data)
@@ -40,7 +41,7 @@ class UserService
             $user->syncRoles($data['roles']);
         }
 
-        return $user->load('roles');
+        return new \App\Http\Resources\V1\UserResource($user->load('roles'));
     }
 
     public function deleteUser(User $user)

@@ -41,7 +41,7 @@ class AuthController extends Controller
         
         // Ensure permissions are loaded appropriately if needed for response
         return $this->success('User Details', [
-            'user' => $user,
+            'user' => new \App\Http\Resources\V1\UserResource($user),
             'roles' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
         ]);
