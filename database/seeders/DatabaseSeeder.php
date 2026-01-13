@@ -26,5 +26,17 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
         ]);
+
+        // Create Editor Role (if not exists)
+        $editorRole = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'editor']);
+        $editorRole->givePermissionTo(['view users', 'view roles']);
+
+        // Create Editor User
+        $editor = User::factory()->create([
+            'name' => 'John Editor',
+            'email' => 'john@example.com',
+            'password' => bcrypt('password123'),
+        ]);
+        $editor->assignRole('editor');
     }
 }
